@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đăng ký - Smart Academy</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<div class="container">
+    <div class="auth-header">
+        <h2>Tạo tài khoản</h2>
+        <p class="text-muted">Tham gia cùng Smart Academy ngay hôm nay</p>
+    </div>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" th:field="*{fullName}" class="form-control" placeholder="Nhập họ và tên đầy đủ">
+            <small class="text-danger" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></small>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="example@gmail.com">
+            <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="text" th:field="*{phone}" class="form-control" placeholder="Số điện thoại Việt Nam">
+            <small class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label>Mật khẩu</label>
+                <input type="password" th:field="*{password}" class="form-control" placeholder="******">
+                <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+            </div>
+            <div class="col-md-6 form-group">
+                <label>Xác nhận</label>
+                <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="******">
+                <small class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-auth">Đăng ký ngay</button>
+
+        <div class="redirect-link">
+            Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>
+        </div>
+    </form>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+</body>
+</html>

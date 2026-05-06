@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .wrapper { display: flex; align-items: stretch; }
+        .main-content { width: 100%; padding: 20px; background: #f8f9fa; }
+        .footer { padding: 15px; background: #fff; border-top: 1px solid #dee2e6; text-align: center; margin-top: 20px; }
+
+        .sidebar {
+            min-width: 280px;
+            min-height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e9ecef;
+            padding: 25px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+            list-style: none;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #495057 !important;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none !important;
+        }
+
+        /* Hiệu ứng Hover */
+        .nav-link:hover {
+            background-color: #f0f9f4;
+            color: #2d6a4f !important;
+            transform: translateX(5px);
+        }
+
+        /* Hiệu ứng Icon */
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            color: #adb5bd;
+        }
+
+        .nav-link:hover i {
+            color: #40916c;
+            transform: scale(1.2);
+        }
+
+        /* Vạch đánh dấu khi Active (Được xử lý bằng JS) */
+        .nav-link.active {
+            background-color: #e8f5e9 !important;
+            color: #2d6a4f !important;
+            font-weight: 600;
+        }
+
+        .nav-link.active i {
+            color: #40916c !important;
+        }
+
+        .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 4px;
+            background-color: #40916c;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Nút Đăng xuất */
+        .logout-btn {
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fff1f0;
+            border-color: #ff4d4f;
+            color: #ff4d4f !important;
+            box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- SIDEBAR FRAGMENT -->
+    <nav class="sidebar d-flex flex-column" th:fragment="sidebar">
+        <div>
+            <div class="mb-5 px-3">
+                <h4 class="text-success font-weight-bold" style="letter-spacing: 1px;">
+                    <i class="fas fa-leaf mr-2"></i>SMART ACADEMY
+                </h4>
+            </div>
+
+            <ul class="nav flex-column px-2" id="sidebar-menu">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/student/profile}">
+                        <i class="fas fa-user-circle"></i> Danh mục phòng Lab
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/student/history}">
+                        <i class="fas fa-graduation-cap"></i> Danh mục Khoa/Ngành
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/student/devices}">
+                        <i class="fas fa-laptop-code"></i> Duyệt yêu cầu mượn thiết bị
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/student/booking}">
+                        <i class="fas fa-calendar-check"></i> Danh mục thiết bị thực hành
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mt-auto px-2 pb-4">
+            <a th:href="@{/logout}" class="btn btn-outline-danger btn-block logout-btn">
+                <i class="fas fa-power-off mr-2"></i> Đăng xuất
+            </a>
+        </div>
+
+        <!-- SCRIPT XỬ LÝ ACTIVE MENU -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Lấy đường dẫn hiện tại (pathname)
+                const currentPath = window.location.pathname;
+
+                // Lấy tất cả các thẻ nav-link trong sidebar
+                const navLinks = document.querySelectorAll('#sidebar-menu .nav-link');
+
+                navLinks.forEach(link => {
+                    // Lấy giá trị href của thẻ a
+                    const href = link.getAttribute('href');
+
+                    // Nếu đường dẫn hiện tại khớp với href (hoặc bắt đầu bằng href đối với các sub-page)
+                    if (currentPath === href || (currentPath.startsWith(href) && href !== '/')) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        </script>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div id="content-area">
+            <!-- Trang con sẽ gán nội dung vào đây -->
+        </div>
+
+        <!-- FOOTER FRAGMENT -->
+        <footer class="footer" th:fragment="footer">
+            <p class="text-muted mb-0">&copy; 2026 Smart Academy & Lab Support Platform. All rights reserved.</p>
+        </footer>
+    </div>
+</div>
+
+<!-- Nhúng Toast chung -->
+<div th:replace="~{common/fragments :: toast-script}"></div>
+</body>
+</html>
