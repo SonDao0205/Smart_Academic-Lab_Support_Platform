@@ -1,0 +1,78 @@
+<!-- File: src/main/resources/templates/common/profile.html -->
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="profile-content">
+    <div class="container-fluid">
+        <div class="mb-4">
+            <h3 class="font-weight-bold text-success">Thông tin hồ sơ</h3>
+            <p class="text-muted">Chi tiết thông tin tài khoản cá nhân trên hệ thống</p>
+        </div>
+
+        <div class="row">
+            <!-- CỘT 1: THÔNG TIN TỔNG QUAN -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 rounded-lg text-center p-4 mb-4">
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center"
+                             style="width: 120px; height: 120px; border: 4px solid #e8f5e9;">
+                            <i th:class="${user.role == 'admin' ? 'fas fa-user-shield' : (user.role == 'lecturer' ? 'fas fa-chalkboard-teacher' : 'fas fa-user-graduate')} + ' fa-4x text-success'"></i>
+                        </div>
+                    </div>
+                    <h4 class="font-weight-bold mb-1" th:text="${user.fullName}">Nguyễn Văn A</h4>
+                    <p class="text-muted mb-3" th:text="${user.userCode}">SV123456</p>
+                    <div class="badge badge-pill badge-success px-3 py-2 mb-3"
+                         th:text="${#strings.toUpperCase(user.role)}">STUDENT</div>
+                    <hr class="w-100">
+                    <div class="text-left small mt-2">
+                        <p class="mb-1"><strong>Trạng thái:</strong>
+                            <span th:class="${user.status ? 'text-success' : 'text-danger'}"
+                                  th:text="${user.status ? 'Đang hoạt động' : 'Bị khóa'}"></span>
+                        </p>
+                        <p class="text-muted mt-2"><i>* Vui lòng liên hệ Admin nếu cần thay đổi thông tin định danh.</i></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CỘT 2: CHI TIẾT DỮ LIỆU (READ-ONLY) -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-lg p-4">
+                    <h5 class="font-weight-bold mb-4 border-bottom pb-2">Thông tin chi tiết</h5>
+                    <div class="row">
+                        <!-- Họ và tên -->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-600 text-muted small text-uppercase">Họ và tên</label>
+                            <div class="form-control-plaintext border-bottom font-weight-bold" th:text="${user.fullName}">Nguyễn Văn A</div>
+                        </div>
+
+                        <!-- Mã người dùng -->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-600 text-muted small text-uppercase">Mã người dùng</label>
+                            <div class="form-control-plaintext border-bottom font-weight-bold" th:text="${user.userCode}">SV123456</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-600 text-muted small text-uppercase">Email liên lạc</label>
+                            <div class="form-control-plaintext border-bottom font-weight-bold" th:text="${user.email}">example@gmail.com</div>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-600 text-muted small text-uppercase">Số điện thoại</label>
+                            <div class="form-control-plaintext border-bottom font-weight-bold" th:text="${user.phone}">0987654321</div>
+                        </div>
+
+                        <!-- Vai trò hệ thống -->
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-600 text-muted small text-uppercase">Quyền hạn</label>
+                            <div class="form-control-plaintext border-bottom font-weight-bold" th:text="${user.role}">student</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

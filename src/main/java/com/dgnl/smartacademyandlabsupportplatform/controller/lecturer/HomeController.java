@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @GetMapping()
     public String home() {
-        return "lecturer/student_in_wait";
+        return "redirect:/lecturer/profile";
     }
 }

@@ -1,4 +1,4 @@
-package com.dgnl.smartacademyandlabsupportplatform.controller.student;
+package com.dgnl.smartacademyandlabsupportplatform.controller.lecturer;
 
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.User;
 import jakarta.servlet.http.HttpSession;
@@ -7,8 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller("user_profile_controller")
-@RequestMapping("/student")
+@Controller("lecturer_profile_controller")
+@RequestMapping("/lecturer")
 public class ProfileController {
     @GetMapping("/profile")
     public String profilePage(HttpSession session, Model model) {
@@ -18,6 +18,6 @@ public class ProfileController {
             return "redirect:/login";
         }
         model.addAttribute("user", sessionUser);
-        return "student/profile";
+        return "lecturer/profile";
     }
 }
