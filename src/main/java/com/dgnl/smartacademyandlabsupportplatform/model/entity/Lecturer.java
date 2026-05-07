@@ -1,11 +1,17 @@
 package com.dgnl.smartacademyandlabsupportplatform.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Table(name = "lecturers")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lecturer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +21,9 @@ public class Lecturer {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "lecturer", cascade = CascadeType.ALL)
-    private List<Department> departments;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
+    private String expertise;
 }

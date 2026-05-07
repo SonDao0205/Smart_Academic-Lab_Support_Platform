@@ -15,6 +15,7 @@ public class ProfileController {
         User sessionUser =(User) session.getAttribute("user");
 
         if (sessionUser == null) {
+            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
             return "redirect:/login";
         }
         model.addAttribute("user", sessionUser);

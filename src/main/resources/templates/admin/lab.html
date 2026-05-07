@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Danh mục phòng Lab</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="font-weight-bold text-success">Danh mục phòng Lab</h3>
+                    <p class="text-muted">Quản lý danh sách các phòng thực hành và nghiên cứu</p>
+                </div>
+            </div>
+
+            <!-- Bộ lọc dữ liệu -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/lab}" method="get" class="row align-items-end">
+                        <div class="col-md-5">
+                            <label class="small font-weight-bold">Tìm kiếm</label>
+                            <input type="text" name="keyword" class="form-control" placeholder="Nhập mã phòng hoặc tên phòng...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Sắp xếp theo</label>
+                            <select name="sortBy" class="form-control">
+                                <option value="roomCode">Mã phòng (A-Z)</option>
+                                <option value="name">Tên phòng (A-Z)</option>
+                                <option value="id">Mới nhất</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-filter"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bảng hiển thị -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0 px-4">ID</th>
+                                <th class="border-top-0">Mã phòng</th>
+                                <th class="border-top-0">Tên phòng Lab</th>
+                                <th class="border-top-0">Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="lab : ${labs}">
+                                <td class="px-4" th:text="${lab.id}">1</td>
+                                <td>
+                                    <span class="badge badge-secondary p-2" th:text="${lab.roomCode}">LAB-001</span>
+                                </td>
+                                <td>
+                                    <span class="font-weight-bold text-dark" th:text="${lab.name}">Phòng AI & Data Science</span>
+                                </td>
+                                <td th:text="${lab.description}">Mô tả về trang thiết bị phòng...</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(labs)}">
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-door-closed fa-3x mb-3"></i>
+                                    <p>Không tìm thấy phòng Lab nào.</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="~{common/layout :: footer}"></footer>
+    </div>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+</body>
+</html>

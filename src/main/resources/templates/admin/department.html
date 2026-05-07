@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Danh mục Khoa/Ngành</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="font-weight-bold text-success">Danh mục Khoa/Ngành</h3>
+                    <p class="text-muted">Quản lý các đơn vị học thuật trong hệ thống</p>
+                </div>
+            </div>
+
+            <!-- Bộ lọc dữ liệu -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/department}" method="get" class="row align-items-end">
+                        <div class="col-md-6">
+                            <label class="small font-weight-bold">Tìm kiếm tên khoa</label>
+                            <input type="text" name="keyword" class="form-control" placeholder="Nhập tên khoa cần tìm...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Sắp xếp</label>
+                            <select name="sortBy" class="form-control">
+                                <option value="name">Tên (A-Z)</option>
+                                <option value="id">Mới nhất</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bảng hiển thị -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0 px-4">ID</th>
+                                <th class="border-top-0">Tên Khoa/Ngành</th>
+                                <th class="border-top-0">Mô tả chi tiết</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="dept : ${departments}">
+                                <td class="px-4" th:text="${dept.id}">1</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm mr-3 bg-light-success text-success d-flex align-items-center justify-content-center"
+                                             style="width: 35px; height: 35px; border-radius: 4px;">
+                                            <i class="fas fa-university"></i>
+                                        </div>
+                                        <span class="font-weight-bold text-dark" th:text="${dept.name}">Khoa Công nghệ thông tin</span>
+                                    </div>
+                                </td>
+                                <td th:text="${dept.description}">Mô tả ngành đào tạo...</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(departments)}">
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fas fa-school fa-3x mb-3"></i>
+                                    <p>Chưa có dữ liệu Khoa/Ngành.</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="~{common/layout :: footer}"></footer>
+    </div>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+</body>
+</html>

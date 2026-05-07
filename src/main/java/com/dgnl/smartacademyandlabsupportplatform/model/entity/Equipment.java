@@ -6,18 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "labs")
+@Table(name = "equipments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lab {
+public class Equipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String roomCode;
-
     private String name;
     private String description;
+    private int quantity;
+    @ManyToOne
+    @JoinColumn(name = "lab_id")
+    private Lab lab;
 }

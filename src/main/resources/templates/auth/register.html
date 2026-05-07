@@ -23,7 +23,7 @@
 
         <div class="form-group">
             <label>Email</label>
-            <input type="email" th:field="*{email}" class="form-control" placeholder="example@gmail.com">
+            <input type="text" th:field="*{email}" class="form-control" placeholder="example@gmail.com">
             <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
         </div>
 

@@ -1,4 +1,4 @@
 package com.dgnl.smartacademyandlabsupportplatform.service;
 
-public interface UserService {
+public interface BookingService {
 }

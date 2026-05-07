@@ -7,11 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller("admin_profile_controller")
-@RequestMapping("/admin")
-public class ProfileController {
-    @GetMapping("/profile")
-    public String profilePage(HttpSession session, Model model) {
+@Controller
+@RequestMapping("/admin/approve_request")
+public class ApproveRequestController {
+    @GetMapping()
+    public String approveRequestPage(Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
         if (sessionUser == null) {
@@ -19,6 +19,6 @@ public class ProfileController {
             return "redirect:/login";
         }
         model.addAttribute("user", sessionUser);
-        return "admin/profile";
+        return "admin/approve_request";
     }
 }

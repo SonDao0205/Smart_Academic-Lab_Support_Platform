@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Quản lý Thiết bị & Tài liệu</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="font-weight-bold text-success">Danh mục Thiết bị/Tài liệu</h3>
+                    <p class="text-muted">Quản lý kho thiết bị thực hành và cấp phát</p>
+                </div>
+                <button type="button" class="btn btn-success shadow-sm" data-toggle="modal"
+                        data-target="#addEquipmentModal">
+                    <i class="fas fa-plus-circle mr-2"></i> Thêm thiết bị mới
+                </button>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/equipment}" method="get" class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Tìm kiếm theo tên</label>
+                            <input type="text" name="keyword" class="form-control" placeholder="Nhập tên thiết bị...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small font-weight-bold">Lọc theo phòng Lab</label>
+                            <select name="labId" class="form-control">
+                                <option value="">Tất cả phòng Lab</option>
+                                <option th:each="lab : ${labs}" th:value="${lab.id}"
+                                        th:text="${lab.roomCode + ' - ' + lab.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small font-weight-bold">Sắp xếp</label>
+                            <select name="sortBy" class="form-control">
+                                <option value="name">Tên (A-Z)</option>
+                                <option value="quantity">Số lượng (Tăng dần)</option>
+                                <option value="id">Mới nhất</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-filter"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0 px-4">ID</th>
+                                <th class="border-top-0">Tên thiết bị</th>
+                                <th class="border-top-0">Mô tả</th>
+                                <th class="border-top-0">Số lượng</th>
+                                <th class="border-top-0">Phòng Lab</th>
+                                <th class="border-top-0 text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${equipments}">
+                                <td class="px-4" th:text="${item.id}">1</td>
+                                <td>
+                                    <span class="font-weight-bold text-dark" th:text="${item.name}">Máy tính Dell</span>
+                                </td>
+                                <td th:text="${item.description}">Mô tả ngắn...</td>
+                                <td>
+                                    <span th:class="${item.quantity > 5 ? 'badge badge-info' : 'badge badge-danger'}"
+                                          th:text="${item.quantity}">10</span>
+                                </td>
+                                <td>
+                                    <i class="fas fa-door-open mr-1 text-muted"></i>
+                                    <span th:text="${item.lab != null ? item.lab.roomCode + ' : ' + item.lab.name : 'Chưa gán'}">LAB-01 : Phòng máy 01</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/admin/equipment/edit/{id}(id=${item.id})}"
+                                       class="btn btn-sm btn-outline-primary mr-1" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/admin/equipment/delete/{id}(id=${item.id})}"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa thiết bị này?')" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(equipments)}">
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-box-open fa-3x mb-3"></i>
+                                    <p>Không tìm thấy thiết bị nào trong kho.</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="~{common/layout :: footer}"></footer>
+    </div>
+</div>
+
+<div class="modal fade" id="addEquipmentModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title font-weight-bold">Thêm thiết bị/tài liệu mới</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form th:action="@{/admin/equipment/add}" th:object="${equipDTO}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="modal-body p-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Tên thiết bị <span class="text-danger">*</span></label>
+                        <input type="text" th:field="*{name}" class="form-control" placeholder="VD: Laptop Dell XPS">
+                        <small class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Mô tả</label>
+                        <textarea th:field="*{description}" class="form-control" rows="3"
+                                  placeholder="Nhập thông số kỹ thuật hoặc ghi chú..."></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Số lượng <span class="text-danger">*</span></label>
+                                <input type="number" th:field="*{quantity}" class="form-control">
+                                <small class="text-danger" th:if="${#fields.hasErrors('quantity')}"
+                                       th:errors="*{quantity}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Phòng Lab <span class="text-danger">*</span></label>
+                                <select th:field="*{lab}" class="form-control">
+                                    <option value="">-- Chọn phòng --</option>
+                                    <option th:each="lab : ${labs}" th:value="${lab.id}"
+                                            th:text="${lab.roomCode + ' : ' + lab.name}"></option>
+                                </select>
+                                <small class="text-danger" th:if="${#fields.hasErrors('lab')}"
+                                       th:errors="*{lab}"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <a th:href="@{/admin/equipment}" class="btn btn-light px-4">Hủy</a>
+
+                    <button type="submit"
+                            th:class="${isEdit} ? 'btn btn-primary px-4' : 'btn btn-success px-4'"
+                            th:text="${isEdit} ? 'Cập nhật' : 'Lưu thiết bị'">
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script th:if="${hasErrors}">
+    $(document).ready(function () {
+        $('#addEquipmentModal').modal('show');
+    });
+</script>
+</body>
+</html>
