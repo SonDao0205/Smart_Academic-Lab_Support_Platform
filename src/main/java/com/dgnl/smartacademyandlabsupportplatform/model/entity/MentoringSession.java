@@ -1,12 +1,15 @@
 package com.dgnl.smartacademyandlabsupportplatform.model.entity;
 
+import com.dgnl.smartacademyandlabsupportplatform.model.MentoringSessionEnum;
 import com.dgnl.smartacademyandlabsupportplatform.model.SessionStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "mentoring_sessions")
@@ -26,10 +29,10 @@ public class MentoringSession {
     @JoinColumn(name = "lecturer_id")
     private Lecturer lecturer;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate bookingDate; // Ngày đặt lịch
+    private LocalTime startTime;   // Giờ bắt đầu
+    private LocalTime endTime;     // Giờ kết thúc
 
-    private SessionStatusEnum status;
-
+    private String status = MentoringSessionEnum.pending.toString();
 
 }

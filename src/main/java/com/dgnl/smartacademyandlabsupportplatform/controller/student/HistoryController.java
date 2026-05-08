@@ -1,0 +1,46 @@
+package com.dgnl.smartacademyandlabsupportplatform.controller.student;
+
+import com.dgnl.smartacademyandlabsupportplatform.model.entity.User;
+import com.dgnl.smartacademyandlabsupportplatform.service.BookingService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/student/history")
+public class HistoryController {
+    private final BookingService bookingService;
+
+    public HistoryController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
+
+    @GetMapping()
+    public String historyPage(HttpSession session, Model model) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) return "redirect:/login";
+        model.addAttribute("user", sessionUser);
+        // Lấy danh sách lịch sử theo ID sinh viên trong session
+        var history = bookingService.getHistoryByStudent(sessionUser.getId());
+        model.addAttribute("history", history);
+        return "student/history";
+    }
+
+    @GetMapping("/cancel/{id}")
+    public String cancelBooking(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) return "redirect:/login";
+
+        try {
+            bookingService.cancelBooking(id, sessionUser.getId());
+            ra.addFlashAttribute("success", "Đã hủy lịch hẹn thành công!");
+        } catch (RuntimeException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/student/history";
+    }
+}

@@ -10,6 +10,7 @@ public class UserAccountDTO {
     private String email;
     private String phone;
     private String role;
+    private Long departmentId;
     private String departmentName;
     private boolean status;
 }

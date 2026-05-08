@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
                 Lecturer l = lecturerRepository.findByUserId(user.getId()).orElse(null);
                 if (l != null && l.getDepartment() != null) {
                     dto.setDepartmentName(l.getDepartment().getName());
+                    dto.setDepartmentId(l.getDepartment().getId());
                 } else {
                     dto.setDepartmentName("-");
                 }
@@ -113,7 +114,7 @@ public class UserServiceImpl implements UserService {
             if (dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
                 throw new MissingInput("password", "Mật khẩu bắt buộc đối với tài khoản mới!");
             }else{
-                if(dto.getPassword().length() <= 6 ||  dto.getPassword().length() >= 50) {
+                if(dto.getPassword().length() < 6 ||  dto.getPassword().length() > 50) {
                     throw new MissingInput("password", "Độ dài mật khẩu phải từ 6 - 50 kí tự!!");
                 }
             }

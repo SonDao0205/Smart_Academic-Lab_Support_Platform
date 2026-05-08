@@ -1,19 +1,77 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{common/layout :: head}">
-    <title>Đặt lịch</title>
+    <title>Đặt lịch Cố vấn</title>
 </head>
 <body>
 <div class="wrapper">
-    <!--Sidebar theo role-->
     <nav th:replace="~{common/layout :: sidebar}"></nav>
 
     <div class="main-content">
+        <div class="container-fluid">
+            <div class="card shadow border-0 mt-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Đăng ký lịch hẹn Cố vấn</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Thông báo -->
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <div th:if="${param.success}" class="alert alert-success">Đặt lịch thành công!</div>
 
-        <!--Footer chung-->
+                    <form th:action="@{/student/booking/submit}" th:object="${bookingDTO}" method="post">
+                        <div class="row">
+                            <!-- BƯỚC 1: CHỌN KHOA -->
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold">Khoa/Ngành</label>
+                                <select class="form-control" name="departmentId" id="deptSelect"
+                                        th:classappend="${#fields.hasErrors('departmentId')} ? 'is-invalid' : ''"
+                                        onchange="window.location.href='/student/booking?deptId=' + this.value">
+                                    <option value="">-- Chọn Khoa --</option>
+                                    <option th:each="d : ${departments}"
+                                            th:value="${d.id}"
+                                            th:text="${d.name}"
+                                            th:selected="${d.id == selectedDeptId}"></option>
+                                </select>
+                                <!-- Dòng báo lỗi -->
+                                <small class="text-danger" th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"></small>
+                            </div>
+
+                            <!-- BƯỚC 2: CHỌN GIẢNG VIÊN -->
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold">Giảng viên</label>
+                                <select class="form-control" th:field="*{lecturerId}"
+                                        th:classappend="${#fields.hasErrors('lecturerId')} ? 'is-invalid' : ''">
+                                    <option value="">-- Chọn Giảng viên --</option>
+                                    <option th:each="l : ${lecturers}"
+                                            th:value="${l.id}"
+                                            th:text="${l.fullName + ' (' + l.userCode + ')'}"></option>
+                                </select>
+                                <!-- Dòng báo lỗi -->
+                                <small class="text-danger" th:if="${#fields.hasErrors('lecturerId')}" th:errors="*{lecturerId}"></small>
+                            </div>
+
+                            <!-- BƯỚC 3: CHỌN NGÀY GIỜ -->
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold">Ngày & Giờ đặt lịch</label>
+                                <input type="datetime-local" class="form-control"
+                                       th:field="*{startDate}"
+                                       th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid' : ''">
+                                <!-- Dòng báo lỗi -->
+                                <small class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></small>
+                            </div>
+                        </div>
+
+                        <div class="text-right mt-3">
+                            <button type="submit" class="btn btn-success px-5">
+                                <i class="fas fa-check-circle mr-2"></i> Xác nhận Đặt lịch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <footer th:replace="~{common/layout :: footer}"></footer>
     </div>
 </div>
-<div th:replace="~{common/fragments :: toast-script}"></div>
 </body>
 </html>
