@@ -1,19 +1,238 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{common/layout :: head}">
-    <title>Quản lý tài khoản</title>
+    <title>Quản lý Tài khoản</title>
 </head>
 <body>
 <div class="wrapper">
-    <!--Sidebar theo role-->
     <nav th:replace="~{common/layout :: sidebar}"></nav>
 
     <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="font-weight-bold text-success">Quản lý người dùng</h3>
+                    <p class="text-muted">Quản lý tài khoản sinh viên và giảng viên trong hệ thống</p>
+                </div>
+                <a  th:href="@{/admin/account}" class="btn btn-success shadow-sm" data-toggle="modal" data-target="#userModal">
+                    <i class="fas fa-user-plus mr-2"></i> Tạo tài khoản mới
+                </a>
+            </div>
 
-        <!--Footer chung-->
+            <!-- Bộ lọc (Filter) -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/account}" method="get" class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="small font-weight-bold">Tìm kiếm</label>
+                            <input type="text" name="keyword" class="form-control"
+                                   placeholder="Mã số, tên hoặc email...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small font-weight-bold">Vai trò</label>
+                            <select name="role" class="form-control">
+                                <option value="">Tất cả vai trò</option>
+                                <option value="student">Sinh viên</option>
+                                <option value="lecturer">Giảng viên</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small font-weight-bold">Trạng thái</label>
+                            <select name="status" class="form-control">
+                                <option value="">Tất cả</option>
+                                <option value="true">Đang hoạt động</option>
+                                <option value="false">Đã khóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-filter"></i> Lọc
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bảng dữ liệu -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="border-top-0 px-4">Mã số</th>
+                                <th class="border-top-0">Họ tên</th>
+                                <th class="border-top-0">Liên hệ</th>
+                                <th class="border-top-0">Vai trò</th>
+                                <th class="border-top-0">Khoa</th>
+                                <th class="border-top-0">Trạng thái</th>
+                                <th class="border-top-0 text-center">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="acc : ${accounts}">
+                                <td class="px-4 font-weight-bold" th:text="${acc.userCode}">SV001</td>
+                                <td>
+                                    <div th:text="${acc.fullName}">Nguyễn Văn A</div>
+                                </td>
+                                <td>
+                                    <small class="d-block text-muted"><i class="fas fa-envelope mr-1"></i> <span
+                                            th:text="${acc.email}"></span></small>
+                                    <small class="d-block text-muted"><i class="fas fa-phone mr-1"></i> <span
+                                            th:text="${acc.phone}"></span></small>
+                                </td>
+                                <td>
+                                    <span th:switch="${acc.role}">
+                                        <span th:case="'lecturer'" class="badge badge-warning">Giảng viên</span>
+                                        <span th:case="'admin'" class="badge badge-danger">Quản lý</span>
+                                        <span th:case="*" class="badge badge-info">Sinh viên</span>
+                                    </span>
+                                </td>
+                                <td th:text="${acc.departmentName}">CNTT</td>
+                                <td>
+                                    <span th:class="${acc.status ? 'text-success' : 'text-danger'}">
+                                        <i class="fas fa-circle mr-1" style="font-size: 10px;"></i>
+                                        <span th:text="${acc.status ? 'Hoạt động' : 'Bị khóa'}"></span>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/admin/account/edit/{id}(id=${acc.id})}"
+                                       class="btn btn-sm btn-outline-primary mr-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/admin/account/delete/{id}(id=${acc.id})}"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Xóa tài khoản này?')"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         <footer th:replace="~{common/layout :: footer}"></footer>
     </div>
 </div>
+
+<!-- Modal Thêm/Sửa Account -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title font-weight-bold"
+                    th:text="${isEdit ? 'Chỉnh sửa tài khoản' : 'Thêm tài khoản mới'}"></h5>
+            </div>
+            <form th:action="@{/admin/account/add}" th:object="${userDTO}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Mã số người dùng <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{userCode}" class="form-control" placeholder="VD: B20DCCN001">
+                            <small class="text-danger" th:if="${#fields.hasErrors('userCode')}" th:errors="*{userCode}"></small>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{fullName}" class="form-control">
+                            <small class="text-danger" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></small>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Email <span class="text-danger">*</span></label>
+                            <input type="email" th:field="*{email}" class="form-control">
+                            <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Số điện thoại</label>
+                            <input type="text" th:field="*{phone}" class="form-control">
+                            <small class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Mật khẩu <span class="text-danger"
+                                                                           th:if="${!isEdit}">*</span></label>
+                            <input type="password" th:field="*{password}" class="form-control"
+                                   th:placeholder="${isEdit ? 'Để trống nếu không đổi' : ''}">
+                            <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label class="font-weight-bold">Vai trò <span class="text-danger">*</span></label>
+                            <select th:field="*{role}" class="form-control" id="roleSelect">
+                                <option value="student">Sinh viên</option>
+                                <option value="lecturer">Giảng viên</option>
+                            </select>
+                        </div>
+                        <!-- Section chọn Khoa: Chỉ hiện khi là Lecturer -->
+                        <div class="col-md-12 form-group" id="deptSection"
+                             th:style="${userDTO.role == 'lecturer' ? 'display: block;' : 'display: none;'}">
+                            <label class="font-weight-bold">Trực thuộc khoa <span class="text-danger">*</span></label>
+                            <select th:field="*{departmentId}" class="form-control" id="departmentSelect">
+                                <option value="">-- Chọn khoa --</option>
+                                <option th:each="dept : ${departments}"
+                                        th:value="${dept.id}"
+                                        th:text="${dept.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <!-- Thay đổi từ button sang link để reset lại trang hoàn toàn -->
+                    <a th:href="@{/admin/account}" class="btn btn-light px-4">Hủy</a>
+                    <button type="submit" class="btn btn-success px-4"
+                            th:text="${isEdit ? 'Cập nhật' : 'Lưu tài khoản'}"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div th:replace="~{common/fragments :: toast-script}"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        // Lấy các element
+        const roleSelect = $('#roleSelect');
+        const deptSection = $('#deptSection');
+        const deptInput = $('#departmentSelect');
+
+        function toggleDepartment() {
+            if (roleSelect.val() === 'lecturer') {
+                deptSection.show();
+                deptInput.prop('required', true);
+            } else {
+                deptSection.hide();
+                deptInput.prop('required', false);
+                deptInput.val('');
+            }
+        }
+
+        roleSelect.on('change', toggleDepartment);
+
+        // --- CÁCH FIX LỖI "NOT DEFINED" ---
+        // Thymeleaf sẽ thay thế đoạn comment này bằng giá trị thực (true/false)
+        var isEdit = /*[[${isEdit ?: false}]]*/ false;
+        var hasErrors = /*[[${hasErrors ?: false}]]*/ false;
+
+
+        // 1. Tự động mở Modal nếu có lỗi hoặc đang Edit
+        if (hasErrors || isEdit) {
+            $('#userModal').modal({
+                backdrop: 'static',
+                show: true
+            });
+            toggleDepartment();
+        }
+
+        // 2. Reset khi bấm nút Tạo mới
+        $('.btn-success[data-target="#userModal"]').on('click', function() {
+            if (!isEdit && !hasErrors) {
+                const form = $('#userModal').find('form');
+                form[0].reset();
+                form.find('.is-invalid').removeClass('is-invalid');
+                toggleDepartment();
+            }
+        });
+    });
+</script>
 </body>
 </html>

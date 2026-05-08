@@ -25,5 +25,4 @@ public class Lecturer {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    private String expertise;
 }
