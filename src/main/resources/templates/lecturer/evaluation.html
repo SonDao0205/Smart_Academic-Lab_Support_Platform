@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Đánh giá & Cấp phát</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+
+    <div class="main-content">
+        <div class="container-fluid mt-4">
+            <div class="card shadow border-0">
+                <div class="card-header bg-white py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Hồ sơ Đánh giá năng lực & Thiết bị hỗ trợ</h5>
+                </div>
+                <div class="card-body">
+                    <form id="evaluationForm" th:action="@{/lecturer/evaluation/add}" th:object="${academyEvaluationDTO}" method="post">
+                        <input type="hidden" th:field="*{mentoringSessionId}">
+
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold text-dark">Nội dung tư vấn & Đánh giá:</label>
+                            <textarea class="form-control" th:field="*{content}" rows="4"
+                                      placeholder="Nhập nội dung tư vấn chi tiết cho sinh viên..."></textarea>
+                            <small class="text-danger" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></small>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Phòng Lab cung cấp thiết bị:</label>
+                            <!-- Sửa lỗi onchange bằng th:onchange -->
+                            <select class="form-control" th:field="*{labId}" id="labSelect"
+                                    th:onchange="|window.location.href='/lecturer/evaluation?sessionId=' + ${sessionId} + '&labId=' + this.value|">
+                                <option value="">-- Chọn phòng Lab --</option>
+                                <option th:each="l : ${labs}" th:value="${l.id}" th:text="${l.name}"></option>
+                            </select>
+                            <small class="form-text text-muted">Vui lòng chọn Lab để xem danh sách thiết bị khả dụng.</small>
+                        </div>
+
+                        <div class="table-responsive mt-3" th:if="${not #lists.isEmpty(equipments)}">
+                            <table class="table table-bordered align-middle" id="equipmentTable">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Tên thiết bị</th>
+                                    <th class="text-center">Số lượng còn</th>
+                                    <th class="text-center" style="width: 200px;">Cấp phát</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Sửa iter để lấy index chính xác -->
+                                <tr th:each="item, iter : ${equipments}">
+                                    <td th:text="${item.name}" class="eq-name"></td>
+                                    <td class="text-center font-weight-bold eq-stock" th:text="${item.quantity}"></td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="hidden" th:name="|selectedEquipments[${iter.index}].equipmentId|" th:value="${item.id}">
+                                            <input type="number" class="form-control input-qty"
+                                                   th:name="|selectedEquipments[${iter.index}].quantity|"
+                                                   min="0" placeholder="0">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">Cái</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-5 border-top pt-3">
+                            <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                                <i class="fas fa-save mr-1"></i> Lưu kết quả & Hoàn thành
+                            </button>
+                            <a th:href="@{/lecturer/waiting-list}" class="btn btn-light px-4 border ml-2">
+                                Hủy bỏ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="~{common/layout :: footer}"></footer>
+    </div>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+<style>
+    .is-invalid { border: 2px solid #dc3545 !important; }
+</style>
+</body>
+</html>

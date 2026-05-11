@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface LabService{
     List<Lab> getAll();
+    Lab getById(Long id);
 }

@@ -1,6 +1,8 @@
 package com.dgnl.smartacademyandlabsupportplatform.controller.student;
 
+import com.dgnl.smartacademyandlabsupportplatform.model.entity.AcademyEvaluation;
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.User;
+import com.dgnl.smartacademyandlabsupportplatform.service.AcademyEvaluationService;
 import com.dgnl.smartacademyandlabsupportplatform.service.BookingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -14,9 +16,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/student/history")
 public class HistoryController {
     private final BookingService bookingService;
+    private final AcademyEvaluationService academyEvaluationService;
 
-    public HistoryController(BookingService bookingService) {
+    public HistoryController(BookingService bookingService, AcademyEvaluationService academyEvaluationService) {
         this.bookingService = bookingService;
+        this.academyEvaluationService = academyEvaluationService;
     }
 
     @GetMapping()
@@ -42,5 +46,29 @@ public class HistoryController {
             ra.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/student/history";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable("id") Long sessionId, HttpSession session, Model model, RedirectAttributes ra) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) return "redirect:/login";
+
+        // Tìm thông tin buổi tư vấn
+        var mentoringSession = bookingService.getById(sessionId);
+
+        // Tìm hồ sơ đánh giá liên quan đến buổi tư vấn này
+        // Bạn cần viết thêm hàm findByMentoringSessionId trong Service
+        AcademyEvaluation evaluation = academyEvaluationService.getByMentoringSessionId(sessionId);
+
+        if (evaluation == null) {
+            ra.addFlashAttribute("error", "Hồ sơ đánh giá hiện chưa có hoặc chưa được cập nhật.");
+            return "redirect:/student/history";
+        }
+
+        model.addAttribute("user", sessionUser);
+        model.addAttribute("sessionDetail", mentoringSession);
+        model.addAttribute("evaluation", evaluation);
+
+        return "student/evaluation_detail";
     }
 }

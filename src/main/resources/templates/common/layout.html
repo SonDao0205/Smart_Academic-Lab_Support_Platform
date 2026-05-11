@@ -41,15 +41,13 @@
             <th:block th:case="'lecturer'">
                 <li class="nav-item"><a class="nav-link" th:href="@{/lecturer/profile}"><i class="fas fa-user-circle"></i> Hồ sơ</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/lecturer/waiting-list}"><i class="fas fa-users"></i> Sinh viên chờ tư vấn</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/lecturer/assign}"><i class="fas fa-hand-holding-medical"></i> Chỉ định thiết bị</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/lecturer/evaluation}"><i class="fas fa-star"></i> Đánh giá</a></li>
             </th:block>
 
             <!-- MENU CHO STUDENT -->
             <th:block th:case="'student'">
                 <li class="nav-item"><a class="nav-link" th:href="@{/student/profile}"><i class="fas fa-user-circle"></i> Hồ sơ</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/student/history}"><i class="fas fa-history"></i> Lịch sử tư vấn</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/student/devices}"><i class="fas fa-laptop"></i> Thiết bị mượn</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/student/borrow_devices}"><i class="fas fa-laptop"></i> Thiết bị mượn</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/student/booking}"><i class="fas fa-calendar-plus"></i> Đặt lịch</a></li>
             </th:block>
 
@@ -57,7 +55,8 @@
     </div>
 
     <div class="mt-auto px-2 pb-4">
-        <a th:href="@{/logout}" class="btn btn-outline-danger btn-block logout-btn">
+        <a th:href="@{/logout}" class="btn btn-outline-danger btn-block logout-btn"
+           onclick="return confirm('Bạn có chắc chắn muốn đăng xuất?')">
             <i class="fas fa-power-off mr-2"></i> Đăng xuất
         </a>
     </div>

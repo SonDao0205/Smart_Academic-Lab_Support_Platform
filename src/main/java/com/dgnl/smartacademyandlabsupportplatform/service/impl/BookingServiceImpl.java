@@ -43,6 +43,8 @@ public class BookingServiceImpl implements BookingService {
         LocalDate date = startDateTime.toLocalDate();
         LocalTime startTime = startDateTime.toLocalTime();
         LocalTime endTime = startTime.plusHours(1); // Mặc định mỗi ca tư vấn là 1 tiếng
+        LocalTime beforeTime = startTime.minusHours(1);
+        LocalTime afterTime = startTime.plusHours(1);
 
         // 2. NGHIỆP VỤ: Chặn đặt lịch trong quá khứ
         if (startDateTime.isBefore(LocalDateTime.now())) {
@@ -55,11 +57,12 @@ public class BookingServiceImpl implements BookingService {
 
         // 4. NGHIỆP VỤ: Chống xung đột (Cùng giảng viên không thể có 2 lịch trùng giờ)
         // Lưu ý: existsByLecturerId ở đây là ID của bảng LECTURERS
-        boolean isConflict = sessionRepository.existsByLecturerIdAndBookingDateAndStartTimeAndStatus(
+        boolean isConflict = sessionRepository.existsConflictWithBuffer(
                 lecturer.getId(),
                 date,
-                startTime,
-                "pending"
+                "pending",
+                beforeTime,
+                afterTime
         );
 
         if (isConflict) {
@@ -107,9 +110,8 @@ public class BookingServiceImpl implements BookingService {
         Lecturer lecturer = lecturerRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Giảng viên không tồn tại!"));
 
-        // Lấy các buổi có trạng thái pending hoặc approved
         return sessionRepository.findAllByLecturerIdAndStatusInOrderByBookingDateAscStartTimeAsc(
-                lecturer.getId(), List.of(MentoringSessionEnum.pending.toString(), MentoringSessionEnum.approved.toString()));
+                lecturer.getId(), List.of(MentoringSessionEnum.pending.toString()));
     }
 
     @Override
@@ -145,4 +147,9 @@ public class BookingServiceImpl implements BookingService {
         sessionRepository.save(session);
     }
 
+
+    @Override
+    public MentoringSession getById(Long sessionId) {
+        return sessionRepository.findById(sessionId).orElse(null);
+    }
 }

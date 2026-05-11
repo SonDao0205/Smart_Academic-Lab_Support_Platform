@@ -46,8 +46,8 @@
                                     Hiện tại không có sinh viên nào đang chờ tư vấn.
                                 </td>
                             </tr>
-                            <tr th:each="item, state : ${waitingList}">
-                                <td class="px-4" th:text="${state.count}">1</td>
+                            <tr th:each="item: ${waitingList}">
+                                <td class="px-4" th:text="${item.id}">1</td>
                                 <td>
                                     <span class="font-weight-bold" th:text="${item.student.fullName}"></span>
                                 </td>
@@ -67,10 +67,9 @@
                                 </td>
                                 <td class="text-center">
                                     <a th:if="${item.status == 'pending'}"
-                                       th:href="@{/lecturer/waiting-list/complete/{id}(id=${item.id})}"
-                                       class="btn btn-sm btn-success mr-1"
-                                       onclick="return confirm('Xác nhận đã hoàn thành buổi tư vấn này?')">
-                                        <i class="fas fa-check-double mr-1"></i> Xác nhận
+                                       th:href="@{/lecturer/evaluation(sessionId=${item.id})}"
+                                       class="btn btn-sm btn-primary mr-1">
+                                        <i class="fas fa-edit mr-1"></i> Đánh giá
                                     </a>
 
                                     <a th:if="${item.status == 'pending'}"

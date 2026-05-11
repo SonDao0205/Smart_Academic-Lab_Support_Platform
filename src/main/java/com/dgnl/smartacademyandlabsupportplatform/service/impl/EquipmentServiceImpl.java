@@ -29,7 +29,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    public Equipment save(EquipmentDTO equipmentDTO) {
+    public void save(EquipmentDTO equipmentDTO) {
         Equipment equipment;
 
         if (equipmentDTO.getId() != null && equipmentRepository.existsById((long) equipmentDTO.getId())) {
@@ -44,7 +44,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         equipment.setQuantity(equipmentDTO.getQuantity());
         equipment.setLab(equipmentDTO.getLab());
 
-        return equipmentRepository.save(equipment);
+        equipmentRepository.save(equipment);
     }
 
     @Override
@@ -53,5 +53,10 @@ public class EquipmentServiceImpl implements EquipmentService {
             throw new GetById("Thiết bị/tài liệu không hợp lệ!");
         }
         equipmentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Equipment> getByLab(Long id) {
+        return equipmentRepository.getEquipmentByLabId(id);
     }
 }

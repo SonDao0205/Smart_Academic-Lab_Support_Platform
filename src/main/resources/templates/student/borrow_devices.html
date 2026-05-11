@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Thiết bị đang mượn</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+
+    <div class="main-content">
+        <div class="container-fluid mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="font-weight-bold text-primary">Danh sách thiết bị mượn</h3>
+            </div>
+
+            <div class="card shadow border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="px-4">Mã đơn</th>
+                                <th>Tên thiết bị</th>
+                                <th class="text-center">Số lượng</th>
+                                <th>Trạng thái thiết bị</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Kiểm tra nếu danh sách chi tiết trống -->
+                                <tr th:if="${#lists.isEmpty(details)}">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        Bạn chưa có thiết bị nào đang trong danh sách mượn.
+                                    </td>
+                                </tr>
+
+                                <!-- Lặp trực tiếp qua từng chi tiết thiết bị -->
+                                <tr th:unless="${#lists.isEmpty(details)}" th:each="detail, state : ${details}">
+                                    <!-- Mã đơn mượn cha -->
+                                    <td>
+                                        <span class="badge badge-light border" th:text="'#' + ${detail.borrowing.id}"></span>
+                                    </td>
+
+                                    <!-- Tên thiết bị -->
+                                    <td>
+                                        <span class="font-weight-bold text-dark" th:text="${detail.equipment.name}"></span>
+                                    </td>
+
+                                    <!-- Số lượng -->
+                                    <td class="text-center">
+                                        <span class="badge badge-pill badge-secondary" th:text="${detail.quantity}"></span>
+                                    </td>
+
+                                    <!-- Trạng thái thiết bị -->
+                                    <td>
+                                        <div th:switch="${detail.status}">
+                                            <span th:case="'REQUESTED'" class="badge badge-warning">
+                                                <i class="fas fa-clock mr-1"></i> Đang chờ duyệt
+                                            </span>
+                                                                    <span th:case="'APPROVED'" class="badge badge-success">
+                                                <i class="fas fa-check-circle mr-1"></i> Đã cấp phát
+                                            </span>
+                                                                    <span th:case="'REJECTED'" class="badge badge-danger">
+                                                <i class="fas fa-ban mr-1"></i> Từ chối
+                                            </span>
+                                            <span th:case="*" class="badge badge-secondary" th:text="${detail.status}"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="~{common/layout :: footer}"></footer>
+    </div>
+</div>
+<div th:replace="~{common/fragments :: toast-script}"></div>
+</body>
+</html>
