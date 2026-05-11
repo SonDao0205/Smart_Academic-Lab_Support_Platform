@@ -24,10 +24,6 @@ public class ApproveRequestController {
     public String approveRequestPage(Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         model.addAttribute("requests", borrowingService.getPendingRequests());
         return "admin/approve_request";
@@ -37,10 +33,6 @@ public class ApproveRequestController {
     public String detailPage(@PathVariable Long id, Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         if(id == null){
             return "redirect:/admin/approve_request";
@@ -54,10 +46,6 @@ public class ApproveRequestController {
     public String approve(@PathVariable Long detailId, RedirectAttributes ra, Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         if(detailId == null){
             return "redirect:/admin/approve_request";
@@ -75,10 +63,6 @@ public class ApproveRequestController {
     public String reject(@PathVariable Long detailId, RedirectAttributes ra, Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         if(detailId == null){
             return "redirect:/admin/approve_request";

@@ -26,7 +26,6 @@ public class HistoryController {
     @GetMapping()
     public String historyPage(HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
         model.addAttribute("user", sessionUser);
         var history = bookingService.getHistoryByStudent(sessionUser.getId());
         model.addAttribute("history", history);
@@ -36,7 +35,6 @@ public class HistoryController {
     @GetMapping("/cancel/{id}")
     public String cancelBooking(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         try {
             bookingService.cancelBooking(id, sessionUser.getId());
@@ -50,7 +48,6 @@ public class HistoryController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Long sessionId, HttpSession session, Model model, RedirectAttributes ra) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         var mentoringSession = bookingService.getById(sessionId);
 

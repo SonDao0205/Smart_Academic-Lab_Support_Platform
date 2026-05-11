@@ -24,7 +24,6 @@ public class BorrowController {
     @GetMapping()
     public String borrowDevices(Model model, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         List<BorrowingDetail> details = borrowingService.getDetailsByUserId(sessionUser.getId());
 

@@ -29,7 +29,6 @@ public class AccountController {
     @GetMapping()
     public String accountPage(Model model, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         model.addAttribute("user", sessionUser);
         model.addAttribute("userDTO", new UserDTO());
@@ -46,7 +45,6 @@ public class AccountController {
                               Model model,
                               HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         if (userDTO.getId() == null && (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty())) {
             bindingResult.rejectValue("password", "error.userDTO", "Mật khẩu bắt buộc khi thêm mới!");
@@ -82,7 +80,6 @@ public class AccountController {
     @GetMapping("/delete/{id}")
     public String deleteAccount(@PathVariable Long id, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         userService.deleteById(id);
         return "redirect:/admin/account";
@@ -91,7 +88,6 @@ public class AccountController {
     @GetMapping("/edit/{id}")
     public String editAccount(@PathVariable Long id, HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         try {
             User user = userService.getById(id);

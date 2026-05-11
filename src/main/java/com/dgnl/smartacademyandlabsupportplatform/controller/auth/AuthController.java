@@ -6,6 +6,10 @@ import com.dgnl.smartacademyandlabsupportplatform.model.dto.AuthLoginDTO;
 import com.dgnl.smartacademyandlabsupportplatform.model.dto.AuthRegisterDTO;
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.User;
 import com.dgnl.smartacademyandlabsupportplatform.service.AuthService;
+//import com.dgnl.smartacademyandlabsupportplatform.util.JwtTokenUtil;
+import com.dgnl.smartacademyandlabsupportplatform.util.JwtTokenUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -21,9 +25,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class AuthController {
     private final AuthService authService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService,  JwtTokenUtil jwtTokenUtil) {
         this.authService = authService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @GetMapping("/")
@@ -38,7 +44,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("user") AuthLoginDTO authLoginDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String login(@Valid @ModelAttribute("user") AuthLoginDTO authLoginDTO,
+                        BindingResult bindingResult,
+                        Model model,
+                        HttpSession session,
+                        HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             return "auth/login";
         }
@@ -48,9 +58,18 @@ public class AuthController {
                 model.addAttribute("error", "Đăng nhập thất bại!");
                 return "auth/login";
             }
+            // TỰ ĐỘNG TẠO TOKEN VÀ LƯU COOKIE
+            String token = jwtTokenUtil.generateToken(u);
+            Cookie cookie = new Cookie("remember-me", token);
+            cookie.setMaxAge(86400000); // 10 ngày
+            cookie.setPath("/");
+            cookie.setHttpOnly(true); // Tránh bị JS tấn công lấy token
+            response.addCookie(cookie);
+
+            // Lưu Session
             session.setAttribute("user", u);
-            String role = u.getRole();
-            session.setAttribute("role", role);
+            session.setAttribute("role", u.getRole());
+            String role =  u.getRole();
             model.addAttribute("success","Đăng nhập thành công!");
             if (role.equals(UserRoleEnum.admin.toString())) {
                 return "redirect:/admin";
@@ -94,9 +113,16 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public String logoutPage(HttpSession session) {
-        session.removeAttribute("user");
-        session.removeAttribute("role");
+    public String logout(HttpSession session, HttpServletResponse response) {
+        // 1. Xóa Session
+        session.invalidate();
+
+        // 2. Xóa Cookie
+        Cookie cookie = new Cookie("remember-me", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return "redirect:/login";
     }
 }

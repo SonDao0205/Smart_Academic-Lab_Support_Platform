@@ -29,7 +29,6 @@ public class BookingController {
     public String bookingPage(@RequestParam(value = "deptId", required = false) Long deptId,
                               HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         model.addAttribute("user", sessionUser);
         model.addAttribute("departments", departmentService.getAll());
@@ -51,7 +50,6 @@ public class BookingController {
                                 BindingResult bindingResult,
                                 HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         if (bindingResult.hasErrors()) {
             prepareModelData(model, sessionUser, bookingDTO);

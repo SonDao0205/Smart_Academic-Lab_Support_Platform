@@ -23,7 +23,6 @@ public class WaitingListController {
     @GetMapping
     public String waitingListPage(HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         var list = bookingService.getLecturerWaitingList(sessionUser.getId());
         model.addAttribute("user", sessionUser);
@@ -46,7 +45,6 @@ public class WaitingListController {
     @GetMapping("/reject/{id}")
     public String reject(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
 
         try {
             bookingService.rejectSession(id, sessionUser.getId());

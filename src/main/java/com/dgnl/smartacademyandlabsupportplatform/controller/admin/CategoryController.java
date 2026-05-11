@@ -24,10 +24,6 @@ public class CategoryController {
     public String departmentPage(Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         model.addAttribute("departments",departmentService.getAll());
         return "admin/department";
@@ -37,10 +33,6 @@ public class CategoryController {
     public String labPage(Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         model.addAttribute("labs",labService.getAll());
         return "admin/lab";

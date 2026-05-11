@@ -39,7 +39,6 @@ public class AcademyEvaluationController {
                                      @RequestParam(value = "labId", required = false) Long labId,
                                      Model model, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) return "redirect:/login";
         List<Equipment> listEquipment = new ArrayList<>();
         AcademyEvaluationDTO dto = new AcademyEvaluationDTO();
         dto.setMentoringSessionId(sessionId);

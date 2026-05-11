@@ -27,10 +27,6 @@ public class EquipmentController {
     public String equipmentPage(Model model, HttpSession session) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         model.addAttribute("equipDTO", new EquipmentDTO());
         model.addAttribute("equipments", equipmentService.getAll());
@@ -45,9 +41,6 @@ public class EquipmentController {
                                HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            return "redirect:/login";
-        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", sessionUser);
@@ -76,10 +69,6 @@ public class EquipmentController {
     public String deleteEquipment(@PathVariable Integer id, HttpSession session, Model model) {
         User sessionUser =(User) session.getAttribute("user");
 
-        if (sessionUser == null) {
-            model.addAttribute("error", "Phiên đăng nhập hết hạn!");
-            return "redirect:/login";
-        }
         model.addAttribute("user", sessionUser);
         equipmentService.deleteById(id);
         model.addAttribute("success", "Xoá thiết bị/tài liệu thành công!");
@@ -89,9 +78,6 @@ public class EquipmentController {
     @GetMapping("/edit/{id}")
     public String editEquipment(@PathVariable Integer id, HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            return "redirect:/login";
-        }
 
         try {
             Equipment equipment = equipmentService.getById(id);
