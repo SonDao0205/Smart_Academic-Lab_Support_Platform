@@ -1,15 +1,20 @@
 package com.dgnl.smartacademyandlabsupportplatform.controller.student;
 
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.AcademyEvaluation;
+import com.dgnl.smartacademyandlabsupportplatform.model.entity.MentoringSession;
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.User;
 import com.dgnl.smartacademyandlabsupportplatform.service.AcademyEvaluationService;
 import com.dgnl.smartacademyandlabsupportplatform.service.BookingService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -24,11 +29,16 @@ public class HistoryController {
     }
 
     @GetMapping()
-    public String historyPage(HttpSession session, Model model) {
+    public String historyPage(@RequestParam(defaultValue = "0") int page,
+                              HttpSession session, Model model) {
         User sessionUser = (User) session.getAttribute("user");
         model.addAttribute("user", sessionUser);
-        var history = bookingService.getHistoryByStudent(sessionUser.getId());
-        model.addAttribute("history", history);
+
+        // Mỗi trang hiển thị 5 bản ghi
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<MentoringSession> historyPage = bookingService.getHistoryByStudent(sessionUser.getId(), pageable);
+
+        model.addAttribute("history", historyPage);
         return "student/history";
     }
 

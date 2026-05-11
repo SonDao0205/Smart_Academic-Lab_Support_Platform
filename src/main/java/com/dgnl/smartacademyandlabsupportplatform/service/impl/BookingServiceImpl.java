@@ -10,6 +10,8 @@ import com.dgnl.smartacademyandlabsupportplatform.repository.MentoringRepository
 import com.dgnl.smartacademyandlabsupportplatform.repository.UserRepository;
 import com.dgnl.smartacademyandlabsupportplatform.service.BookingService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -136,5 +138,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public MentoringSession getById(Long sessionId) {
         return sessionRepository.findById(sessionId).orElse(null);
+    }
+
+    @Override
+    public Page<MentoringSession> getHistoryByStudent(Long studentId, Pageable pageable) {
+        return sessionRepository.findAllByStudentIdOrderByBookingDateDesc(studentId, pageable);
     }
 }

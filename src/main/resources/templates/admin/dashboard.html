@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common/layout :: head}">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<div class="wrapper">
+    <nav th:replace="~{common/layout :: sidebar}"></nav>
+    <div class="main-content">
+        <div class="container-fluid mt-4">
+            <h3 class="font-weight-bold mb-4">Hệ thống Thống kê & Phân tích</h3>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-white font-weight-bold">Top 5 Giảng viên tư vấn nhiều nhất</div>
+                        <div class="card-body">
+                            <canvas id="lecturerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-white font-weight-bold">Phân bổ trạng thái thiết bị</div>
+                        <div class="card-body">
+                            <canvas id="equipmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+    // 1. Dữ liệu Top Giảng viên
+    const topLecturers = /*[[${topLecturers}]]*/ [];
+    const lecturerLabels = topLecturers.map(l => `${l.fullName} (${l.userCode})`);
+    const lecturerCounts = topLecturers.map(l => l.sessionCount);
+
+    new Chart(document.getElementById('lecturerChart'), {
+        type: 'bar',
+        data: {
+            labels: lecturerLabels,
+            datasets: [{
+                label: 'Số lượt tư vấn',
+                data: lecturerCounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        }
+    });
+
+    // 2. Dữ liệu Thiết bị
+    const equipStats = /*[[${equipmentStats}]]*/ [];
+    const equipLabels = equipStats.map(e => e.status);
+    const equipCounts = equipStats.map(e => e.count);
+
+    new Chart(document.getElementById('equipmentChart'), {
+        type: 'doughnut',
+        data: {
+            labels: equipLabels,
+            datasets: [{
+                data: equipCounts,
+                backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b']
+            }]
+        }
+    });
+</script>
+</body>
+</html>

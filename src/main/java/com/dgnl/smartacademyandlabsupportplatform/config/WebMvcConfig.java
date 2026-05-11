@@ -14,9 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                // Quét tất cả các URL để kiểm tra login/phân quyền và chặn login/register
                 .addPathPatterns("/**")
-                // Chỉ loại trừ các tài nguyên tĩnh và trang lỗi
                 .excludePathPatterns("/css/**", "/js/**", "/img/**", "/vendor/**", "/error", "/api/**");
     }
 }

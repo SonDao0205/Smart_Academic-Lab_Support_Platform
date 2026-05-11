@@ -1,6 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
+<!-- Fragment Phân Trang Dùng Chung -->
+<nav th:fragment="pagination(pageData, baseUrl)" aria-label="Page navigation"
+     th:if="${pageData.totalPages > 0}" class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        <!-- Nút Về đầu -->
+        <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+            <a class="page-link" th:href="@{${baseUrl}(page=0)}">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+        </li>
+
+        <!-- Nút Trang trước -->
+        <li class="page-item" th:classappend="${!pageData.hasPrevious()} ? 'disabled'">
+            <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number - 1})}" tabindex="-1">Trước</a>
+        </li>
+
+        <!-- Hiển thị các số trang (Giới hạn hiển thị 5 trang gần nhất để không bị tràn) -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}"
+            th:if="${i >= pageData.number - 2 and i <= pageData.number + 2}"
+            th:classappend="${i == pageData.number} ? 'active'">
+            <a class="page-link" th:href="@{${baseUrl}(page=${i})}" th:text="${i + 1}">1</a>
+        </li>
+
+        <!-- Nút Trang sau -->
+        <li class="page-item" th:classappend="${!pageData.hasNext()} ? 'disabled'">
+            <a class="page-link" th:href="@{${baseUrl}(page=${pageData.number + 1})}">Sau</a>
+        </li>
+
+        <!-- Nút Về cuối -->
+        <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+            <a class="page-link" th:href="@{${baseUrl}(page=${pageData.totalPages - 1})}">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
 <div th:fragment="toast-script">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script th:src="@{/js/handler-auth.js}"></script>

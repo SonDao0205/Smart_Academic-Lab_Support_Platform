@@ -32,7 +32,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <tr th:if="${#lists.isEmpty(history)}">
+                                <tr th:if="${history.totalElements == 0}">
                                     <td colspan="7" class="text-center py-5">
                                         <div class="mb-3">
                                             <i class="fas fa-calendar-times text-muted" style="font-size: 3rem;"></i>
@@ -45,7 +45,7 @@
                                     </td>
                                 </tr>
 
-                                <tr th:unless="${#lists.isEmpty(history)}" th:each="item, state : ${history}">
+                                <tr th:unless="${history.totalElements == 0}" th:each="item, state : ${history.content}">
                                     <td class="px-4" th:text="${state.count}">1</td>
                                     <td th:text="${item.lecturer.user.fullName}"></td>
                                     <td th:text="${item.lecturer.department.name}"></td>
@@ -93,11 +93,14 @@
                         </table>
                     </div>
                 </div>
+                <div class="card-footer bg-white border-top-0">
+                    <div th:replace="~{common/fragments :: pagination(${history}, '/student/history')}"></div>
+                </div>
             </div>
         </div>
         <footer th:replace="~{common/layout :: footer}"></footer>
     </div>
 </div>
-<div th:replace="~{common/fragments :: toast-script}"></div>
+<div th:replace="~{common/fragments :: toast-script }"></div>
 </body>
 </html>
