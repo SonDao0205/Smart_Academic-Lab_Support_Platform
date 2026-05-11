@@ -65,7 +65,6 @@ public class AcademyEvaluationController {
                                 Model model, HttpSession session) {
 
         if (bindingResult.hasErrors()) {
-            // Thay vì return file không tồn tại, ta redirect lại trang form kèm thông báo lỗi
             ra.addFlashAttribute("error", "Vui lòng nhập đầy đủ nội dung đánh giá!");
             return "redirect:/lecturer/evaluation?sessionId=" + dto.getMentoringSessionId();
         }

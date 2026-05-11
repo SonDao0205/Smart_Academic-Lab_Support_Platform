@@ -38,20 +38,17 @@ public class AcademyEvaluationServiceImpl implements AcademyEvaluationService {
         MentoringSession session = mentoringRepository.findById(dto.getMentoringSessionId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ca tư vấn"));
 
-        // 1. Kiểm tra số lượng tồn kho của TẤT CẢ thiết bị trước khi làm bất cứ việc gì
         if (dto.getSelectedEquipments() != null && !dto.getSelectedEquipments().isEmpty()) {
             for (AcademyEvaluationDTO.EquipmentSelection item : dto.getSelectedEquipments()) {
                 Equipment equipment = equipmentRepository.findById(item.getEquipmentId())
                         .orElseThrow(() -> new RuntimeException("Thiết bị không tồn tại"));
 
                 if (item.getQuantity() > equipment.getQuantity()) {
-                    // Ném lỗi ngay tại đây, chưa có dữ liệu nào bị insert vào DB
                     throw new RuntimeException("Thiết bị " + equipment.getName() + " chỉ còn " + equipment.getQuantity() + " sản phẩm.");
                 }
             }
         }
 
-        // 2. Nếu kiểm tra qua hết mới thực hiện lưu
         session.setStatus(MentoringSessionEnum.approved.toString());
         mentoringRepository.save(session);
 
@@ -59,15 +56,13 @@ public class AcademyEvaluationServiceImpl implements AcademyEvaluationService {
         evaluation.setContent(dto.getContent());
         evaluation.setMentoringSession(session);
         evaluation.setStatus("FINISHED");
-        AcademyEvaluation savedEval = evaluationRepository.save(evaluation);
+        evaluationRepository.save(evaluation);
 
         if (dto.getSelectedEquipments() != null && !dto.getSelectedEquipments().isEmpty()) {
             Borrowing borrowing = new Borrowing();
             borrowing.setLecturer(session.getLecturer());
             borrowing.setUser(session.getStudent());
             borrowing.setStatus("PENDING");
-            // Nếu có trường evaluation_id trong Borrowing thì set vào đây
-            // borrowing.setAcademyEvaluation(savedEval);
 
             Borrowing savedBorrowing = borrowingRepository.save(borrowing);
 

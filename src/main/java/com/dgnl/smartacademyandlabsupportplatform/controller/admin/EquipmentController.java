@@ -55,7 +55,6 @@ public class EquipmentController {
             model.addAttribute("labs", labService.getAll());
             model.addAttribute("hasErrors", true);
 
-            // Kiểm tra nếu DTO có ID thì nghĩa là đang trong chế độ Edit
             if (equipmentDTO.getId() != null) {
                 model.addAttribute("isEdit", true);
             }
@@ -97,7 +96,6 @@ public class EquipmentController {
         try {
             Equipment equipment = equipmentService.getById(id);
 
-            // Chuyển đổi sang DTO và PHẢI set ID để hệ thống biết đây là bản ghi cũ
             EquipmentDTO dto = new EquipmentDTO();
             dto.setId(equipment.getId());
             dto.setName(equipment.getName());
@@ -110,9 +108,7 @@ public class EquipmentController {
             model.addAttribute("equipments", equipmentService.getAll());
             model.addAttribute("labs", labService.getAll());
 
-            // Tận dụng biến hasErrors để tự động mở Modal khi trang load lại
             model.addAttribute("hasErrors", true);
-            // Đổi tiêu đề modal bằng biến flag
             model.addAttribute("isEdit", true);
 
             return "admin/equipment";

@@ -34,7 +34,6 @@ public class BookingController {
         model.addAttribute("user", sessionUser);
         model.addAttribute("departments", departmentService.getAll());
 
-        // Nếu có deptId, lọc danh sách giảng viên thuộc khoa đó
         if (deptId != null) {
             var lecturers = userService.getAllWithDepartment().stream()
                     .filter(l -> l.getDepartmentId() != null && l.getDepartmentId().equals(deptId))

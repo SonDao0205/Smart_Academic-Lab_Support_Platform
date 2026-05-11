@@ -83,29 +83,22 @@ public class UserServiceImpl implements UserService {
     public void save(UserDTO dto) {
         User user;
 
-        // 1. KIỂM TRA TRÙNG LẶP TRƯỚC KHI XỬ LÝ (Áp dụng cho cả Thêm và Sửa)
-
-        // Check UserCode (Mã số người dùng) - ĐÂY LÀ PHẦN BẠN ĐANG THIẾU
         User existingCode = userRepository.findByUserCode(dto.getUserCode());
         if (existingCode != null && (dto.getId() == null || !existingCode.getId().equals(dto.getId()))) {
             throw new DataDuplicate("userCode", "Mã số người dùng này đã tồn tại!");
         }
 
-        // Check Email
         User existingEmail = userRepository.findByEmail(dto.getEmail());
         if (existingEmail != null && (dto.getId() == null || !existingEmail.getId().equals(dto.getId()))) {
             throw new DataDuplicate("email", "Email này đã tồn tại trong hệ thống!");
         }
 
-        // Check Phone
         User existingPhone = userRepository.findByPhone(dto.getPhone());
         if (existingPhone != null && (dto.getId() == null || !existingPhone.getId().equals(dto.getId()))) {
             throw new DataDuplicate("phone", "Số điện thoại này đã tồn tại!");
         }
 
 
-
-        // 2. XỬ LÝ ĐỐI TƯỢNG USER
         if (dto.getId() != null) {
             user = userRepository.findById(dto.getId()).orElseThrow(() -> new GetById("User không tồn tại"));
         } else {

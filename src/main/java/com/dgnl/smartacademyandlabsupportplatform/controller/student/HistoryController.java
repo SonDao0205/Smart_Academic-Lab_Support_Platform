@@ -28,7 +28,6 @@ public class HistoryController {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) return "redirect:/login";
         model.addAttribute("user", sessionUser);
-        // Lấy danh sách lịch sử theo ID sinh viên trong session
         var history = bookingService.getHistoryByStudent(sessionUser.getId());
         model.addAttribute("history", history);
         return "student/history";
@@ -53,11 +52,8 @@ public class HistoryController {
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) return "redirect:/login";
 
-        // Tìm thông tin buổi tư vấn
         var mentoringSession = bookingService.getById(sessionId);
 
-        // Tìm hồ sơ đánh giá liên quan đến buổi tư vấn này
-        // Bạn cần viết thêm hàm findByMentoringSessionId trong Service
         AcademyEvaluation evaluation = academyEvaluationService.getByMentoringSessionId(sessionId);
 
         if (evaluation == null) {

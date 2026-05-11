@@ -50,14 +50,35 @@
                                 <small class="text-danger" th:if="${#fields.hasErrors('lecturerId')}" th:errors="*{lecturerId}"></small>
                             </div>
 
-                            <!-- BƯỚC 3: CHỌN NGÀY GIỜ -->
-                            <div class="col-md-6 form-group">
-                                <label class="font-weight-bold">Ngày & Giờ đặt lịch</label>
-                                <input type="datetime-local" class="form-control"
-                                       th:field="*{startDate}"
-                                       th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid' : ''">
-                                <!-- Dòng báo lỗi -->
-                                <small class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></small>
+                            <!-- BƯỚC 3: CHỌN NGÀY -->
+                            <div class="col-md-3 form-group">
+                                <label class="font-weight-bold">Ngày hẹn</label>
+                                <input type="date" class="form-control"
+                                       th:field="*{bookingDate}"
+                                       th:classappend="${#fields.hasErrors('bookingDate')} ? 'is-invalid' : ''">
+                                <small class="text-danger" th:if="${#fields.hasErrors('bookingDate')}" th:errors="*{bookingDate}"></small>
+                            </div>
+
+                            <!-- BƯỚC 4: CHỌN GIỜ -->
+                            <div class="col-md-3 form-group">
+                                <label class="font-weight-bold">Khung giờ (1 tiếng)</label>
+                                <select class="form-control" th:field="*{startTime}"
+                                        th:classappend="${#fields.hasErrors('startTime')} ? 'is-invalid' : ''">
+                                    <option value="">-- Chọn giờ --</option>
+                                    <!-- Các khung giờ sáng -->
+                                    <optgroup label="Buổi sáng">
+                                        <option value="08:00">08:00 - 09:00</option>
+                                        <option value="09:00">09:00 - 10:00</option>
+                                        <option value="10:00">10:00 - 11:00</option>
+                                    </optgroup>
+                                    <!-- Các khung giờ chiều -->
+                                    <optgroup label="Buổi chiều">
+                                        <option value="13:30">13:30 - 14:30</option>
+                                        <option value="14:30">15:30 - 15:30</option>
+                                        <option value="15:30">15:30 - 16:30</option>
+                                    </optgroup>
+                                </select>
+                                <small class="text-danger" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></small>
                             </div>
                         </div>
 

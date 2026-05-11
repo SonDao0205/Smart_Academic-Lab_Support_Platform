@@ -41,7 +41,6 @@ public class BorrowingServiceImpl implements BorrowingService {
         BorrowingDetail detail = detailRepository.findById(detailId).orElseThrow();
         Equipment equipment = detail.getEquipment();
 
-        // Trừ số lượng kho
         if (equipment.getQuantity() < detail.getQuantity()) {
             throw new RuntimeException("Số lượng trong kho không đủ!");
         }
@@ -51,7 +50,6 @@ public class BorrowingServiceImpl implements BorrowingService {
         equipmentRepository.save(equipment);
         detailRepository.save(detail);
 
-        // Kiểm tra nếu tất cả detail đã xử lý thì update Borrowing status
         checkAndUpdateBorrowingStatus(detail.getBorrowing());
     }
 
@@ -64,7 +62,6 @@ public class BorrowingServiceImpl implements BorrowingService {
     }
 
     private void checkAndUpdateBorrowingStatus(Borrowing borrowing) {
-        // Logic: Nếu không còn detail nào status REQUESTED, có thể đóng đơn
         boolean hasPending = borrowing.getDetails().stream()
                 .anyMatch(d -> d.getStatus().equals("REQUESTED"));
         if (!hasPending) {
