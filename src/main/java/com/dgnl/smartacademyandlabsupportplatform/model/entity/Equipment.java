@@ -21,4 +21,5 @@ public class Equipment {
     @ManyToOne
     @JoinColumn(name = "lab_id")
     private Lab lab;
+    private boolean isDeleted = false;
 }

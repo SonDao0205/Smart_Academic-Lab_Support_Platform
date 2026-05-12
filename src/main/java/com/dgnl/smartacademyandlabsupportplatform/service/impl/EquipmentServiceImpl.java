@@ -5,6 +5,7 @@ import com.dgnl.smartacademyandlabsupportplatform.model.dto.EquipmentDTO;
 import com.dgnl.smartacademyandlabsupportplatform.model.entity.Equipment;
 import com.dgnl.smartacademyandlabsupportplatform.repository.EquipmentRepository;
 import com.dgnl.smartacademyandlabsupportplatform.service.EquipmentService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,31 +13,32 @@ import java.util.List;
 @Service
 public class EquipmentServiceImpl implements EquipmentService {
     private final EquipmentRepository equipmentRepository;
+
     public EquipmentServiceImpl(EquipmentRepository equipmentRepository) {
         this.equipmentRepository = equipmentRepository;
     }
+
     @Override
     public List<Equipment> getAll() {
-        return equipmentRepository.findAll();
+        return equipmentRepository.findAllActive();
     }
 
     @Override
     public Equipment getById(long id) {
-        if(!equipmentRepository.existsById(id)){
-            throw new GetById("Thiết bị/tài liệu không hợp lệ!");
-        }
-        return equipmentRepository.getById(id);
+        return equipmentRepository.findActiveById(id)
+                .orElseThrow(() -> new GetById("Thiết bị không tồn tại hoặc đã bị xóa!"));
     }
 
     @Override
+    @Transactional
     public void save(EquipmentDTO equipmentDTO) {
         Equipment equipment;
-
-        if (equipmentDTO.getId() != null && equipmentRepository.existsById((long) equipmentDTO.getId())) {
-            equipment = equipmentRepository.findById((long) equipmentDTO.getId())
+        if (equipmentDTO.getId() != null) {
+            equipment = equipmentRepository.findActiveById((long) equipmentDTO.getId())
                     .orElseThrow(() -> new GetById("Không tìm thấy thiết bị để cập nhật!"));
         } else {
             equipment = new Equipment();
+            equipment.setDeleted(false);
         }
 
         equipment.setName(equipmentDTO.getName());
@@ -48,15 +50,16 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
-        if(!equipmentRepository.existsById(id)){
-            throw new GetById("Thiết bị/tài liệu không hợp lệ!");
+        if (!equipmentRepository.existsById(id)) {
+            throw new GetById("Thiết bị không tồn tại!");
         }
-        equipmentRepository.deleteById(id);
+        equipmentRepository.softDeleteById(id);
     }
 
     @Override
     public List<Equipment> getByLab(Long id) {
-        return equipmentRepository.getEquipmentByLabId(id);
+        return equipmentRepository.getActiveEquipmentByLabId(id);
     }
 }
